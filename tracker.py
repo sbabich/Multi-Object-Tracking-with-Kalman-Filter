@@ -58,12 +58,17 @@ class Tracker(object):
 				if (cost[i][assignment[i]] > self.dist_threshold):
 					assignment[i] = -1
 					un_assigned_tracks.append(i)
+          self.tracks[i].skipped_frames +=1
+          print('track unassigned ' + str(self.tracks[i].trackId) + 'skip frames ' + str(self.tracks[i].skipped_frames))
+					
 				else:
+          print('track ' + str(self.tracks[i].trackId) + 'skip frames ' + str(self.tracks[i].skipped_frames))
 					self.tracks[i].skipped_frames +=1
 
 		del_tracks = []
 		for i in range(len(self.tracks)):
 			if self.tracks[i].skipped_frames > self.max_frame_skipped :
+        print('del track ' + str(self.tracks[i].trackId))
 				del_tracks.append(i)
 
 		if len(del_tracks) > 0:
@@ -71,11 +76,11 @@ class Tracker(object):
 				del self.tracks[i]
 				del assignment[i]
 
-		for i in range(len(detections)):
-			if i not in assignment:
-				track = Tracks(detections[i], self.trackId)
-				self.trackId +=1
-				self.tracks.append(track)
+		#for i in range(len(detections)):
+		#	if i not in assignment:
+		#		track = Tracks(detections[i], self.trackId)
+		#		self.trackId +=1
+		#		self.tracks.append(track)
 
 
 		for i in range(len(assignment)):
@@ -83,14 +88,4 @@ class Tracker(object):
 				self.tracks[i].skipped_frames = 0
 				self.tracks[i].predict(detections[assignment[i]])
 			self.tracks[i].trace.append(self.tracks[i].prediction)
-
-
-
-
-
-
-
-		
-
-
 
